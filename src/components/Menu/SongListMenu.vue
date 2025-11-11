@@ -80,7 +80,7 @@ const openDropdown = (
           key: "play",
           label: "立即播放",
           props: {
-            onClick: () => player.addNextSong(song, true),
+            onClick: () => player.updatePlayList(data, song, playListId),
           },
           icon: renderIcon("Play", { size: 18 }),
         },

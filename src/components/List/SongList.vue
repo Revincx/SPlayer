@@ -61,9 +61,14 @@
               :hiddenAlbum="hiddenAlbum"
               :hiddenSize="hiddenSize"
               @dblclick.stop="
-                doubleClickAction === 'add'
-                  ? player.addNextSong(itemData, true)
-                  : player.updatePlayList(listData, itemData, playListId)
+                playListId && doubleClickAction === 'all'
+                  ? player.updatePlayList(listData, itemData, playListId)
+                  : player.addNextSong(itemData, true)
+              "
+              @play="
+                playListId && doubleClickAction === 'all'
+                  ? player.updatePlayList(listData, itemData, playListId)
+                  : player.addNextSong(itemData, true)
               "
               @contextmenu.stop="
                 songListMenuRef?.openDropdown(

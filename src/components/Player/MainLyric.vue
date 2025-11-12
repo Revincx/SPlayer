@@ -427,7 +427,6 @@ onBeforeUnmount(() => {
       }
     }
     .tran {
-      margin-top: 8px;
       opacity: 0.6;
       font-size: var(--lrc-tran-size);
       transition: opacity 0.35s;

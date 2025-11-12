@@ -118,10 +118,11 @@ onMounted(getDynamicCover);
     left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 32px;
+    border-radius: 24px;
     overflow: hidden;
     z-index: 1;
     opacity: 0;
+    box-shadow: 0px 0px 8px rgb(5 5 5 / 30%);
     transition: opacity 0.8s ease-in-out;
     backface-visibility: hidden;
     transform: translateZ(0);
@@ -239,7 +240,8 @@ onMounted(getDynamicCover);
     }
   }
   &.cover {
-    border-radius: 32px;
+    border-radius: 24px;
+    box-shadow: 0px 0px 8px rgb(5 5 5 / 30%);
     overflow: hidden;
     transform: scale(0.9);
     &.playing {

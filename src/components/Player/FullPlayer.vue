@@ -214,8 +214,8 @@ onBeforeUnmount(() => {
       position: absolute;
       left: 0;
       flex: 1;
-      min-width: 50%;
-      width: 50%;
+      min-width: 45%;
+      width: 45%;
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -230,8 +230,8 @@ onBeforeUnmount(() => {
       right: 0;
       flex: 1;
       height: 100%;
-      width: 50%;
-      max-width: 50%;
+      width: 55%;
+      max-width: 55%;
       display: flex;
       flex-direction: column;
       transition: opacity 0.3s;

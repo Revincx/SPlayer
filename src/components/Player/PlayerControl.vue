@@ -76,9 +76,9 @@
           </div>
           <!-- 进度条 -->
           <div class="slider">
-            <span>{{ secondsToTime(statusStore.currentTime) }}</span>
+            <span>{{ msToTime(statusStore.currentTime) }}</span>
             <PlayerSlider :show-tooltip="false" />
-            <span>{{ secondsToTime(statusStore.duration) }}</span>
+            <span>{{ msToTime(statusStore.duration) }}</span>
           </div>
         </div>
         <n-flex class="right" align="center" justify="end">
@@ -92,11 +92,12 @@
 
 <script setup lang="ts">
 import { useMusicStore, useStatusStore, useDataStore } from "@/stores";
-import { secondsToTime } from "@/utils/time";
+import { msToTime } from "@/utils/time";
 import { openDownloadSong, openPlaylistAdd } from "@/utils/modal";
 import { toLikeSong } from "@/utils/auth";
-import player from "@/utils/player";
+import { usePlayer } from "@/utils/player";
 
+const player = usePlayer();
 const dataStore = useDataStore();
 const musicStore = useMusicStore();
 const statusStore = useStatusStore();
@@ -170,7 +171,6 @@ const statusStore = useStatusStore();
         border-radius: 50%;
         will-change: transform;
         transition:
-          backdrop-filter 0.3s,
           background-color 0.3s,
           transform 0.3s;
         cursor: pointer;
@@ -179,7 +179,6 @@ const statusStore = useStatusStore();
         }
         &:hover {
           transform: scale(1.1);
-          backdrop-filter: blur(10px);
           background-color: rgba(var(--main-color), 0.14);
         }
         &:active {

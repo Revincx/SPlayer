@@ -21,7 +21,7 @@
       <n-flex class="left" align="flex-end">
         <n-button
           :focusable="false"
-          :disabled="!currentListData.length || currentTab !== 'download-downloaded'"
+          :disabled="currentTab !== 'download-downloaded'"
           type="primary"
           strong
           secondary
@@ -35,13 +35,19 @@
         </n-button>
         <n-button
           :focusable="false"
-          :disabled="currentTab !== 'download-downloaded'"
+          :disabled="
+            currentTab === 'download-downloaded' ? false : dataStore.downloadingSongs.length === 0
+          "
           :loading="loading"
           class="more"
           strong
           secondary
           circle
-          @click="getDownloadMusic(true)"
+          @click="
+            currentTab === 'download-downloaded'
+              ? getDownloadMusic(true)
+              : DownloadManager.retryAllDownloads()
+          "
         >
           <template #icon>
             <SvgIcon name="Refresh" />
@@ -70,17 +76,15 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter, useRoute } from "vue-router";
 import { useSettingStore, useDataStore } from "@/stores";
-import { ref, watch, onMounted, onActivated, computed } from "vue";
 import type { SongType } from "@/types/main";
 import { formatSongsList } from "@/utils/format";
 import { usePlayer } from "@/utils/player";
 import type { MessageReactive } from "naive-ui";
 import DownloadManager from "@/utils/downloadManager";
 
-const router = useRouter();
 const route = useRoute();
+const router = useRouter();
 const settingStore = useSettingStore();
 const dataStore = useDataStore();
 const player = usePlayer();
@@ -123,6 +127,10 @@ watch(
   },
 );
 
+/**
+ * 获取下载音乐
+ * @param showTip 是否展示加载提示
+ */
 const getDownloadMusic = async (showTip: boolean = false) => {
   try {
     const path = settingStore.downloadPath;
@@ -155,6 +163,9 @@ const getDownloadMusic = async (showTip: boolean = false) => {
     loadingMsg.value = null;
   }
 };
+
+// 刷新列表
+provide("getDownloadMusic", () => getDownloadMusic(false));
 
 onMounted(() => {
   getDownloadMusic();

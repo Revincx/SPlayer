@@ -32,6 +32,30 @@
       </n-card>
       <n-card class="set-item">
         <div class="label">
+          <n-text class="name">显示进度条悬浮信息</n-text>
+        </div>
+        <n-switch v-model:value="settingStore.progressTooltipShow" class="set" :round="false" />
+      </n-card>
+      <n-card class="set-item">
+        <div class="label">
+          <n-text class="name">进度条悬浮时显示歌词</n-text>
+        </div>
+        <n-switch
+          v-model:value="settingStore.progressLyricShow"
+          :disabled="!settingStore.progressTooltipShow"
+          :round="false"
+          class="set"
+        />
+      </n-card>
+      <n-card class="set-item">
+        <div class="label">
+          <n-text class="name">进度调节吸附最近歌词</n-text>
+          <n-text class="tip" :depth="3">进度调节时从当前时间最近一句歌词开始播放</n-text>
+        </div>
+        <n-switch v-model:value="settingStore.progressAdjustLyric" class="set" :round="false" />
+      </n-card>
+      <n-card class="set-item">
+        <div class="label">
           <n-text class="name">音乐渐入渐出</n-text>
         </div>
         <n-switch v-model:value="settingStore.songVolumeFade" class="set" :round="false" />
@@ -192,6 +216,13 @@
           />
         </n-card>
       </n-collapse-transition>
+      <n-card class="set-item">
+        <div class="label">
+          <n-text class="name">播放器主色跟随封面</n-text>
+          <n-text class="tip" :depth="3">播放器主颜色是否跟随封面主色，下一曲生效</n-text>
+        </div>
+        <n-switch v-model:value="settingStore.playerFollowCoverColor" class="set" :round="false" />
+      </n-card>
       <n-card class="set-item">
         <div class="label">
           <n-text class="name">显示前奏倒计时</n-text>

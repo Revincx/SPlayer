@@ -84,7 +84,7 @@ const config: Configuration = {
     // 可执行文件名
     executableName: "SPlayer",
     // 应用程序的图标文件路径
-    icon: "public/icons/favicon-512x512.png",
+    icon: "public/icons/icon.icns",
     // 权限继承的文件路径
     entitlementsInherit: "build/entitlements.mac.plist",
     // macOS 平台全局文件名模板
@@ -153,10 +153,10 @@ const config: Configuration = {
         arch: ["x64", "arm64"],
       },
       // Snap 包管理器（仅支持 x64 架构）
-      {
-        target: "snap",
-        arch: ["x64"],
-      },
+      // {
+      //   target: "snap",
+      //   arch: ["x64"],
+      // },
       // 压缩包格式
       {
         target: "tar.gz",

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { QualityType, type SortType } from "@/types/main";
 import type { PlayModeType, RGB, ColorScheme } from "@/types/main";
+import { isDevBuild } from "@/utils/env";
 
 interface StatusState {
   /** 菜单折叠状态 */
@@ -91,6 +92,8 @@ interface StatusState {
     /** 等待歌曲结束 */
     waitSongEnd: boolean;
   };
+  /** 开发者模式（假） */
+  developerMode: boolean;
 }
 
 export const useStatusStore = defineStore("status", {
@@ -136,6 +139,7 @@ export const useStatusStore = defineStore("status", {
       remainTime: 0,
       waitSongEnd: true,
     },
+    developerMode: false,
   }),
   getters: {
     // 播放音量图标
@@ -169,6 +173,10 @@ export const useStatusStore = defineStore("status", {
       const mainColor = state.songCoverTheme?.main;
       if (!mainColor) return "239, 239, 239";
       return `${mainColor.r}, ${mainColor.g}, ${mainColor.b}`;
+    },
+    /** 是否为开发者模式 */
+    isDeveloperMode(state) {
+      return state.developerMode || isDevBuild;
     },
   },
   actions: {
@@ -243,6 +251,24 @@ export const useStatusStore = defineStore("status", {
      */
     setEqPreset(preset: string) {
       this.eqPreset = preset;
+    },
+    /**
+     * 重置播放状态
+     */
+    resetPlayStatus() {
+      this.$patch({
+        currentTime: 0,
+        duration: 0,
+        progress: 0,
+        lyricIndex: -1,
+        playStatus: false,
+        playLoading: false,
+        playListShow: false,
+        showFullPlayer: false,
+        playHeartbeatMode: false,
+        personalFmMode: false,
+        playIndex: -1,
+      });
     },
   },
   // 持久化

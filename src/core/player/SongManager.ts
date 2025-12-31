@@ -14,7 +14,7 @@ import { openUserLogin } from "@/utils/modal";
 export enum SongUnlockServer {
   NETEASE = "netease",
   BODIAN = "bodian",
-  // KUWO = "kuwo",
+  KUWO = "kuwo",
   GEQUBAO = "gequbao",
 }
 
@@ -79,9 +79,10 @@ class SongManager {
    * @param id 歌曲id
    * @returns 在线播放信息
    */
-  public getOnlineUrl = async (id: number): Promise<AudioSource> => {
+  public getOnlineUrl = async (id: number, isPc: boolean = false): Promise<AudioSource> => {
     const settingStore = useSettingStore();
-    const res = await songUrl(id, settingStore.songLevel);
+    const level = isPc ? "exhigh" : settingStore.songLevel;
+    const res = await songUrl(id, level);
     console.log(`🌐 ${id} music data:`, res);
     const songData = res.data?.[0];
     // 是否有播放地址
@@ -198,7 +199,7 @@ class SongManager {
       // 是否可解锁
       const canUnlock = isElectron && nextSong.type !== "radio" && settingStore.useSongUnlock;
       // 先请求官方地址
-      const { url: officialUrl, isTrial, quality } = await this.getOnlineUrl(songId);
+      const { url: officialUrl, isTrial, quality } = await this.getOnlineUrl(songId, false);
       if (officialUrl && !isTrial) {
         // 官方可播放且非试听
         this.nextPrefetch = { id: songId, url: officialUrl, isUnlocked: false, quality };
@@ -273,7 +274,7 @@ class SongManager {
       // 是否可解锁
       const canUnlock = isElectron && song.type !== "radio" && settingStore.useSongUnlock;
       // 尝试获取官方链接
-      const { url: officialUrl, isTrial, quality } = await this.getOnlineUrl(songId);
+      const { url: officialUrl, isTrial, quality } = await this.getOnlineUrl(songId, !!song.pc);
       // 如果官方链接有效且非试听（或者用户接受试听）
       if (officialUrl && (!isTrial || (isTrial && settingStore.playSongDemo))) {
         if (isTrial) window.$message.warning("当前歌曲仅可试听");

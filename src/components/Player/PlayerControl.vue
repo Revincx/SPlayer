@@ -21,7 +21,11 @@
             <SvgIcon name="AddList" />
           </div>
           <!-- 下载 -->
-          <div class="menu-icon" @click.stop="openDownloadSong(musicStore.playSong)">
+          <div
+            class="menu-icon"
+            v-if="!musicStore.playSong.path"
+            @click.stop="openDownloadSong(musicStore.playSong)"
+          >
             <SvgIcon name="Download" />
           </div>
           <!-- 显示评论 -->
@@ -35,6 +39,16 @@
         </n-flex>
         <div class="center">
           <div class="btn">
+            <!-- 随机按钮 -->
+            <template v-if="musicStore.playSong.type !== 'radio' && !statusStore.personalFmMode">
+              <div class="btn-icon mode-icon" @click.stop="player.toggleShuffle()">
+                <SvgIcon
+                  :name="statusStore.shuffleIcon"
+                  :size="20"
+                  :depth="statusStore.shuffleMode === 'off' ? 3 : 1"
+                />
+              </div>
+            </template>
             <!-- 不喜欢 -->
             <div
               v-if="statusStore.personalFmMode"
@@ -73,12 +87,22 @@
             <div class="btn-icon" v-debounce="() => player.nextOrPrev('next')">
               <SvgIcon :size="26" name="SkipNext" />
             </div>
+            <!-- 循环按钮 -->
+            <template v-if="musicStore.playSong.type !== 'radio' && !statusStore.personalFmMode">
+              <div class="btn-icon mode-icon" @click.stop="player.toggleRepeat()">
+                <SvgIcon
+                  :name="statusStore.repeatIcon"
+                  :size="20"
+                  :depth="statusStore.repeatMode === 'off' ? 3 : 1"
+                />
+              </div>
+            </template>
           </div>
           <!-- 进度条 -->
           <div class="slider">
-            <span>{{ msToTime(statusStore.currentTime) }}</span>
+            <span @click="toggleTimeFormat">{{ timeDisplay0 }}</span>
             <PlayerSlider :show-tooltip="false" />
-            <span>{{ msToTime(statusStore.duration) }}</span>
+            <span @click="toggleTimeFormat">{{ timeDisplay1 }}</span>
           </div>
         </div>
         <n-flex class="right" align="center" justify="end">
@@ -91,19 +115,29 @@
 </template>
 
 <script setup lang="ts">
-import { useMusicStore, useStatusStore, useDataStore } from "@/stores";
-import { msToTime } from "@/utils/time";
-import { openDownloadSong, openPlaylistAdd } from "@/utils/modal";
-import { toLikeSong } from "@/utils/auth";
-import { useSongManager } from "@/core/player/SongManager";
 import { usePlayerController } from "@/core/player/PlayerController";
+import { useSongManager } from "@/core/player/SongManager";
+import { useDataStore, useMusicStore, useSettingStore, useStatusStore } from "@/stores";
+import { toLikeSong } from "@/utils/auth";
+import { getTimeDisplay, TIME_FORMATS } from "@/utils/format";
+import { openDownloadSong, openPlaylistAdd } from "@/utils/modal";
 
 const dataStore = useDataStore();
 const musicStore = useMusicStore();
 const statusStore = useStatusStore();
+const settingStore = useSettingStore();
 
 const songManager = useSongManager();
 const player = usePlayerController();
+
+const timeDisplay = getTimeDisplay(() => settingStore.timeFormatFullPlayer, statusStore);
+const timeDisplay0 = timeDisplay(0);
+const timeDisplay1 = timeDisplay(1);
+
+const toggleTimeFormat = () => {
+  const currentIndex = TIME_FORMATS.indexOf(settingStore.timeFormatFullPlayer);
+  settingStore.timeFormatFullPlayer = TIME_FORMATS[(currentIndex + 1) % TIME_FORMATS.length];
+};
 </script>
 
 <style lang="scss" scoped>
@@ -177,6 +211,8 @@ const player = usePlayerController();
           background-color 0.3s,
           transform 0.3s;
         cursor: pointer;
+        margin: 0 4px;
+
         .n-icon {
           color: rgb(var(--main-cover-color));
         }

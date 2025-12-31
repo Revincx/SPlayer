@@ -3,7 +3,7 @@
 <h2>SPlayer</h2>
 <p>一个简约的音乐播放器</p>
 
-[API Docs](./docs/API.md) | [交流群](https://qm.qq.com/cgi-bin/qm/qr?k=2-cVSf1bE0AvAehCib00qFEFdUvPaJ_k&jump_from=webapi&authKey=1NEhib9+GsmsXVo2rCc0IbRaVHeeRXJJ0gbsyKDcIwDdAzYySOubkFCvkV32+7Cw) | [开发版](https://github.com/imsyy/SPlayer/actions) | [发行版](https://github.com/imsyy/SPlayer/releases)
+[API Docs](https://splayer.imsyy.top/api.html) | [交流群](https://qm.qq.com/cgi-bin/qm/qr?k=2-cVSf1bE0AvAehCib00qFEFdUvPaJ_k&jump_from=webapi&authKey=1NEhib9+GsmsXVo2rCc0IbRaVHeeRXJJ0gbsyKDcIwDdAzYySOubkFCvkV32+7Cw) | [开发版](https://github.com/imsyy/SPlayer/actions) | [发行版](https://splayer.imsyy.top/download.html)
 
 <br />
 
@@ -19,13 +19,15 @@
 
 ## 说明
 
+![提示](/screenshots/gitcodes.png)
+
 > [!IMPORTANT]
 >
 > ### 严肃警告
 >
 > - 请务必遵守 [GNU Affero General Public License (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.html) 许可协议
 > - 在您的修改、演绎、分发或派生项目中，必须同样采用 **AGPL-3.0** 许可协议，**并在适当的位置包含本项目的许可和版权信息**
-> - **禁止用于售卖或其他盈利用途**，如若发现，作者保留追究法律责任的权利
+> - 若您用于售卖或其他盈利用途，**必须提供本项目的源代码及原项目链接**。另外由于本项目涉及第三方，**售卖后可能遭受法律或诉讼风险**。如若发现违反许可协议，作者保留追究法律责任的权利
 > - 禁止在二开项目中修改程序原版权信息（ 您可以添加二开作者信息 ）
 > - 感谢您的尊重与理解
 
@@ -129,6 +131,8 @@
 ### 稳定版
 
 通常情况下，可以在 [Releases](https://github.com/imsyy/SPlayer/releases) 中获取稳定版
+
+也可前往 [SPlayer 官网](https://splayer.imsyy.top/) 获取稳定版
 
 ### 开发版
 

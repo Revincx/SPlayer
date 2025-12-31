@@ -4,6 +4,7 @@ import { SongUnlockServer } from "@/core/player/SongManager";
 import type { SongLevelType } from "@/types/main";
 import { defaultAMLLDbServer } from "@/utils/meta";
 import { CURRENT_SETTING_SCHEMA_VERSION, settingMigrations } from "./migrations/settingMigrations";
+import { TimeFormat } from "@/utils/format";
 
 export interface SettingState {
   /** Schema 版本号（可选，用于数据迁移） */
@@ -63,8 +64,6 @@ export interface SettingState {
   showYrc: boolean;
   /** 显示逐字歌词动画 */
   showYrcAnimation: boolean;
-  /** 显示逐字歌词长音发光效果 */
-  showYrcLongEffect: boolean;
   /** 显示歌词翻译 */
   showTran: boolean;
   /** 显示歌词音译 */
@@ -131,6 +130,10 @@ export interface SettingState {
   countDownShow: boolean;
   /** 显示歌词条 */
   barLyricShow: boolean;
+  /** 全局播放器时间格式 **/
+  timeFormatMainPlayer: TimeFormat;
+  /** 播放页面时间格式 */
+  timeFormatFullPlayer: TimeFormat;
   /** 播放器类型 */
   playerType: "cover" | "record";
   /** 背景类型 */
@@ -153,6 +156,8 @@ export interface SettingState {
   showSpectrums: boolean;
   /** 是否开启 SMTC */
   smtcOpen: boolean;
+  /** 是否开启原生 SMTC 支持 (Windows) */
+  enableNativeSmtc: boolean;
   /** 歌词模糊 */
   lyricsBlur: boolean;
   /** 鼠标悬停暂停 */
@@ -165,6 +170,12 @@ export interface SettingState {
   useAMLyrics: boolean;
   /** 是否使用 AM 歌词弹簧效果 */
   useAMSpring: boolean;
+  /** 隐藏已播放歌词 */
+  hidePassedLines: boolean;
+  /** 文字动画的渐变宽度 */
+  wordFadeWidth: number;
+  /** 歌词时延调节步长（毫秒） */
+  lyricOffsetStep: number;
   /** 是否启用在线 TTML 歌词 */
   enableTTMLLyric: boolean;
   /** AMLL DB 服务地址 */
@@ -185,6 +196,8 @@ export interface SettingState {
   showLocalCover: boolean;
   /** 路由动画 */
   routeAnimation: "none" | "fade" | "zoom" | "slide" | "up";
+  /** 播放器展开动画 */
+  playerExpandAnimation: "up" | "smooth";
   /** 是否使用真实 IP */
   useRealIP: boolean;
   /** 真实 IP 地址 */
@@ -207,6 +220,8 @@ export interface SettingState {
   excludeRegexes: string[];
   /** 显示默认本地路径 */
   showDefaultLocalPath: boolean;
+  /** 本地文件夹显示模式 */
+  localFolderDisplayMode: "tab" | "dropdown";
   /** 展示当前歌曲歌词状态信息 */
   showPlayMeta: boolean;
   /** 显示歌曲音质 */
@@ -239,6 +254,8 @@ export interface SettingState {
   hideHeartbeatMode: boolean;
   /** 启用搜索关键词获取 */
   enableSearchKeyword: boolean;
+  /** 失焦后自动清空搜索框 */
+  clearSearchOnBlur: boolean;
   /** 首页栏目顺序和显示配置 */
   homePageSections: Array<{
     key: "playlist" | "radar" | "artist" | "video" | "radio" | "album";
@@ -266,6 +283,17 @@ export interface SettingState {
   playerFollowCoverColor: boolean;
   /** 进度条悬浮时显示歌词 */
   progressLyricShow: boolean;
+  /** 是否使用自定义字体输入 */
+  useCustomFont: boolean;
+  /** Discord RPC 配置 */
+  discordRpc: {
+    /** 是否启用 Discord RPC */
+    enabled: boolean;
+    /** 暂停时显示 */
+    showWhenPaused: boolean;
+    /** 显示模式 */
+    displayMode: "name" | "state" | "details";
+  };
 }
 
 export const useSettingStore = defineStore("setting", {
@@ -286,6 +314,7 @@ export const useSettingStore = defineStore("setting", {
     menuShowCover: true,
     menuExpandedKeys: [],
     routeAnimation: "slide",
+    playerExpandAnimation: "up",
     useOnlineService: true,
     showCloseAppTip: true,
     closeAppMethod: "hide",
@@ -304,9 +333,12 @@ export const useSettingStore = defineStore("setting", {
       { key: SongUnlockServer.BODIAN, enabled: true },
       { key: SongUnlockServer.GEQUBAO, enabled: true },
       { key: SongUnlockServer.NETEASE, enabled: true },
+      { key: SongUnlockServer.KUWO, enabled: false },
     ],
     countDownShow: true,
     barLyricShow: true,
+    timeFormatMainPlayer: "current-total",
+    timeFormatFullPlayer: "current-total",
     playerType: "cover",
     playerBackgroundType: "blur",
     playerBackgroundFps: 30,
@@ -318,6 +350,7 @@ export const useSettingStore = defineStore("setting", {
     showPlaylistCount: true,
     showSpectrums: false,
     smtcOpen: true,
+    enableNativeSmtc: true,
     playSongDemo: false,
     scrobbleSong: false,
     dynamicCover: false,
@@ -327,11 +360,13 @@ export const useSettingStore = defineStore("setting", {
     lyricFontBold: true,
     useAMLyrics: false,
     useAMSpring: false,
+    hidePassedLines: false,
+    wordFadeWidth: 0.5,
+    lyricOffsetStep: 500,
     enableTTMLLyric: false,
     amllDbServer: defaultAMLLDbServer,
     showYrc: true,
     showYrcAnimation: true,
-    showYrcLongEffect: true,
     showTran: true,
     showRoma: true,
     lyricsPosition: "flex-start",
@@ -346,6 +381,7 @@ export const useSettingStore = defineStore("setting", {
     localFilesPath: [],
     localLyricPath: [],
     showDefaultLocalPath: true,
+    localFolderDisplayMode: "tab",
     localSeparators: ["/", "&"],
     showLocalCover: true,
     downloadPath: "",
@@ -365,7 +401,7 @@ export const useSettingStore = defineStore("setting", {
     proxyPort: 80,
     useRealIP: false,
     realIP: "",
-    showPlayMeta: false,
+    showPlayMeta: true,
     showSongQuality: true,
     showSongPrivilegeTag: true,
     showSongOriginalTag: true,
@@ -381,6 +417,7 @@ export const useSettingStore = defineStore("setting", {
     hideLikedPlaylists: false,
     hideHeartbeatMode: false,
     enableSearchKeyword: true,
+    clearSearchOnBlur: false,
     homePageSections: [
       { key: "playlist", name: "专属歌单", visible: true, order: 0 },
       { key: "radar", name: "雷达歌单", visible: true, order: 1 },
@@ -404,6 +441,12 @@ export const useSettingStore = defineStore("setting", {
     },
     playerFollowCoverColor: true,
     progressLyricShow: true,
+    useCustomFont: false,
+    discordRpc: {
+      enabled: false,
+      showWhenPaused: true,
+      displayMode: "name",
+    },
   }),
   getters: {
     /**

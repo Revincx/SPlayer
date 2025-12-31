@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <Transition name="up" mode="out-in">
+    <Transition :name="settingStore.playerExpandAnimation" mode="out-in">
       <div
         v-if="statusStore.showFullPlayer"
         :style="{
@@ -54,11 +54,8 @@
                 :light="pureLyricMode"
               />
               <!-- 歌词 -->
-              <MainAMLyric
-                v-if="settingStore.useAMLyrics"
-                :key="`am-lyric-${musicStore.playSong.id}`"
-              />
-              <MainLyric v-else :key="`lyric-${musicStore.playSong.id}`" />
+              <MainAMLyric v-if="settingStore.useAMLyrics" />
+              <MainLyric v-else />
             </div>
           </div>
         </Transition>

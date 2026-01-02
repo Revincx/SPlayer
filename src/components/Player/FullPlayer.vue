@@ -277,6 +277,8 @@ onBeforeUnmount(() => {
     &.no-lrc {
       .content-left {
         transform: translateX(50%);
+        width: 50%;
+        max-width: 50%;
       }
       .content-right {
         opacity: 0;
